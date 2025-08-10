@@ -1,0 +1,131 @@
+/* Dashboard Theme-Aware Styles */
+
+:root {
+  /* Reuse semantic tokens defined in Homepage.css via CSS variables */
+  /* These fallbacks are only used if Homepage.css isn't loaded */
+  --color-text: var(--color-text, #1f2937);
+  --color-text-muted: var(--color-text-muted, #6b7280);
+  --color-primary: var(--color-primary, #6366f1);
+  --color-primary-contrast: var(--color-primary-contrast, #ffffff);
+  --color-accent: var(--color-accent, #06b6d4);
+  --color-success: var(--color-success, #10b981);
+  --color-warning: var(--color-warning, #f59e0b);
+  --color-error: var(--color-error, #ef4444);
+  --background-app: var(--background-app, linear-gradient(135deg, #eef2ff, #e0e7ff));
+  --color-surface: var(--color-surface, #ffffff);
+  --color-border: var(--color-border, #e5e7eb);
+  --radius-md: var(--radius-md, 0.5rem);
+  --radius-lg: var(--radius-lg, 0.75rem);
+  --radius-xl: var(--radius-xl, 1rem);
+  --shadow-md: var(--shadow-md, 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -1px rgba(0,0,0,.06));
+  --shadow-lg: var(--shadow-lg, 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05));
+  --space-sm: var(--space-sm, 1rem);
+  --space-md: var(--space-md, 1.5rem);
+  --space-lg: var(--space-lg, 2rem);
+}
+
+/* Root wrapper so we don't fight Tailwind utility classes */
+.dashboard {
+  background: var(--background-app);
+}
+
+/* Header refinement */
+.dashboard .dashboard-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+.dashboard .dashboard-brand {
+  color: var(--color-text);
+}
+
+.dashboard .dashboard-brand-accent {
+  color: var(--color-primary);
+}
+
+/* Buttons */
+.dashboard .btn-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.dashboard .btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.dashboard .btn-accent {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* Cards */
+.dashboard .card,
+.dashboard .panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Stats badges */
+.dashboard .badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.dashboard .badge.success { background-color: color-mix(in srgb, var(--color-success) 15%, transparent); color: var(--color-success); }
+.dashboard .badge.info { background-color: color-mix(in srgb, var(--color-accent) 15%, transparent); color: var(--color-accent); }
+.dashboard .badge.warning { background-color: color-mix(in srgb, var(--color-warning) 18%, transparent); color: var(--color-warning); }
+.dashboard .badge.danger { background-color: color-mix(in srgb, var(--color-error) 15%, transparent); color: var(--color-error); }
+
+/* Inputs */
+.dashboard .input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+
+.dashboard .input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
+/* Icon chip background helpers */
+.dashboard .chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.5rem;
+}
+
+.dashboard .chip.blue { background-color: color-mix(in srgb, #3b82f6 12%, transparent); color: #1e40af; }
+.dashboard .chip.green { background-color: color-mix(in srgb, #10b981 12%, transparent); color: #065f46; }
+.dashboard .chip.orange { background-color: color-mix(in srgb, #f59e0b 12%, transparent); color: #92400e; }
+.dashboard .chip.red { background-color: color-mix(in srgb, #ef4444 12%, transparent); color: #991b1b; }
+
+/* Sections spacing */
+.dashboard .section {
+  margin-bottom: var(--space-lg);
+}
+
+/* Utilities without conflicting with Tailwind */
+.dashboard .text-muted { color: var(--color-text-muted); }
+.dashboard .title { color: var(--color-text); font-weight: 700; }
+
+/* Scrollbar */
+.dashboard ::-webkit-scrollbar { width: 8px; }
+.dashboard ::-webkit-scrollbar-track { background: #f1f1f1; }
+.dashboard ::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 9999px; }
+.dashboard ::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--color-primary) 85%, #000); }
