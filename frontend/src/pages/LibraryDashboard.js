@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Book, Users, BookOpen, TrendingUp, Plus, Filter, MoreVertical, User, Calendar, Star, Eye, Edit, Trash2 } from 'lucide-react';
+import { Search, Book, Users, BookOpen, TrendingUp, Plus, Filter, User, Calendar, Eye, Edit, Trash2 } from 'lucide-react';
 import './dashboard.css';
 import AddBookModal from '../components/AddBookModal';
 
@@ -49,37 +49,38 @@ const LibraryManagementDashboard = () => {
 
   // Calculate stats from books data
   const stats = [
-    { 
-      title: 'Total Books', 
-      value: books.length.toString(), 
-      change: '+12%', 
-      color: 'positive' 
+    {
+      title: 'Total Books',
+      value: books.length.toString(),
+      change: '+12%',
+      color: 'positive'
     },
-    { 
-      title: 'Active Members', 
-      value: '1,234', 
-      change: '+8%', 
-      color: 'positive' 
+    {
+      title: 'Active Members',
+      value: '1,234',
+      change: '+8%',
+      color: 'positive'
     },
-    { 
-      title: 'Books Issued', 
-      value: books.filter(book => book.status === 'Issued').length.toString(), 
-      change: '+15%', 
-      color: 'warning' 
+    {
+      title: 'Books Issued',
+      value: books.filter(book => book.status === 'Issued').length.toString(),
+      change: '+15%',
+      color: 'warning'
     },
-    { 
-      title: 'Overdue Books', 
-      value: '23', 
-      change: '-5%', 
-      color: 'negative' 
+    {
+      title: 'Overdue Books',
+      value: '23',
+      change: '-5%',
+      color: 'negative'
     }
   ];
 
   // Filter books based on search and genre
   const filteredBooks = books.filter(book => {
-    const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         book.bookId.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch =
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (book.bookId && book.bookId.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesGenre = !filterGenre || book.genre === filterGenre;
     return matchesSearch && matchesGenre;
   });
@@ -113,6 +114,11 @@ const LibraryManagementDashboard = () => {
     <div className="book-card">
       <div className="book-header">
         <div className="book-info">
+          <img
+            src={book.image || 'https://via.placeholder.com/100x150?text=No+Image'}
+            alt={book.title}
+            className="book-cover"
+          />
           <h3 className="book-title">{book.title}</h3>
           <p className="book-author">{book.author}</p>
           {book.bookId && <p className="book-id">ID: {book.bookId}</p>}
@@ -139,12 +145,17 @@ const LibraryManagementDashboard = () => {
               {book.availableCopies}/{book.totalCopies} available
             </span>
           </div>
-          <span className={`book-status ${
-            book.status === 'Available' ? 'status-available' :
-            book.status === 'Issued' ? 'status-issued' :
-            book.status === 'Reserved' ? 'status-reserved' :
-            'status-maintenance'
-          }`}>
+          <span
+            className={`book-status ${
+              book.status === 'Available'
+                ? 'status-available'
+                : book.status === 'Issued'
+                ? 'status-issued'
+                : book.status === 'Reserved'
+                ? 'status-reserved'
+                : 'status-maintenance'
+            }`}
+          >
             {book.status}
           </span>
         </div>
@@ -211,9 +222,7 @@ const LibraryManagementDashboard = () => {
           <div className="premium-card">
             <h3 className="premium-title">Premium Features</h3>
             <p className="premium-description">Advanced analytics and reporting</p>
-            <button className="premium-button">
-              Upgrade Now
-            </button>
+            <button className="premium-button">Upgrade Now</button>
           </div>
         </div>
       </div>
@@ -224,9 +233,7 @@ const LibraryManagementDashboard = () => {
         <header className="main-header">
           <div className="header-content">
             <div className="header-info">
-              <h2>
-                {selectedSidebar === 'dashboard' ? 'Dashboard Overview' : selectedSidebar}
-              </h2>
+              <h2>{selectedSidebar === 'dashboard' ? 'Dashboard Overview' : selectedSidebar}</h2>
               <p>Welcome back! Here's what's happening in your library.</p>
             </div>
             <div className="header-actions">
@@ -252,11 +259,7 @@ const LibraryManagementDashboard = () => {
         {selectedSidebar === 'dashboard' && (
           <main className="dashboard-main">
             {/* Stats Grid */}
-            <div className="stats-grid">
-              {stats.map((stat, index) => (
-                <StatCard key={index} stat={stat} />
-              ))}
-            </div>
+            <div className="stats-grid">{stats.map((stat, index) => <StatCard key={index} stat={stat} />)}</div>
 
             <div className="content-grid">
               {/* Recent Books */}
@@ -265,11 +268,7 @@ const LibraryManagementDashboard = () => {
                   <h3 className="section-title">Recent Books</h3>
                   <a href="#" className="view-all-link">View All</a>
                 </div>
-                <div className="books-grid">
-                  {books.slice(0, 4).map((book) => (
-                    <BookCard key={book._id} book={book} />
-                  ))}
-                </div>
+                <div className="books-grid">{books.slice(0, 4).map((book) => <BookCard key={book._id} book={book} />)}</div>
               </div>
 
               {/* Active Members */}
@@ -278,11 +277,7 @@ const LibraryManagementDashboard = () => {
                   <h3 className="section-title">Active Members</h3>
                   <a href="#" className="view-all-link">View All</a>
                 </div>
-                <div className="members-list">
-                  {members.map((member) => (
-                    <MemberRow key={member.id} member={member} />
-                  ))}
-                </div>
+                <div className="members-list">{members.map((member) => <MemberRow key={member.id} member={member} />)}</div>
               </div>
             </div>
           </main>
@@ -292,7 +287,7 @@ const LibraryManagementDashboard = () => {
         {selectedSidebar === 'books' && (
           <main className="dashboard-main">
             <div className="filter-controls">
-              <select 
+              <select
                 className="filter-select"
                 value={filterGenre}
                 onChange={(e) => setFilterGenre(e.target.value)}
@@ -319,7 +314,7 @@ const LibraryManagementDashboard = () => {
                 <span>Filter</span>
               </button>
             </div>
-            
+
             {loading ? (
               <div className="loading-state">
                 <div className="loading-spinner"></div>
@@ -342,7 +337,7 @@ const LibraryManagementDashboard = () => {
               <h3 className="section-title">Issued Books</h3>
               <span className="issued-count">{issuedBooks.length} books currently issued</span>
             </div>
-            
+
             {loading ? (
               <div className="loading-state">
                 <div className="loading-spinner"></div>

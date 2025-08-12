@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Homepage from './pages/Homepage';
 import LibraryDashboard from './pages/LibraryDashboard';
+import Books from './pages/Books';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/books" element={<div>Books Page (Coming Soon)</div>} />
         <Route path="/login" element={<div>Login Page (Coming Soon)</div>} />
         <Route path="/register" element={<div>Register Page (Coming Soon)</div>} />
+        <Route path="/book"element={<Books/>} />
       </Routes>
       <Footer />
     </div>

@@ -25,7 +25,7 @@ const Header = () => {
             Home
           </Link>
           <Link 
-            to="/books" 
+            to="/book" 
             className={`nav-link ${isActive('/books') ? 'active' : ''}`}
           >
             Books
