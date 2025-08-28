@@ -25,10 +25,16 @@ const Header = () => {
             Home
           </Link>
           <Link 
-            to="/book" 
+            to="/books" 
             className={`nav-link ${isActive('/books') ? 'active' : ''}`}
           >
             Books
+          </Link>
+          <Link 
+            to="/profile" 
+            className={`nav-link ${isActive('/profile') ? 'active' : ''}`}
+          >
+            Profile
           </Link>
           <Link 
             to="/login" 

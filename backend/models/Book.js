@@ -15,14 +15,14 @@ const bookSchema = new mongoose.Schema({
   language: { type: String, default: 'English' },
   status: { type: String, enum: ['Available', 'Issued', 'Reserved', 'Maintenance'], default: 'Available' },
   issuedTo: [{ 
-    memberId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    memberId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
     issueDate: { type: Date, default: Date.now },
     returnDate: { type: Date },
     isReturned: { type: Boolean, default: false }
   }],
   rating: { type: Number, default: 0 },
   reviews: [{ 
-    memberId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    memberId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
     rating: { type: Number },
     comment: { type: String },
     date: { type: Date, default: Date.now }

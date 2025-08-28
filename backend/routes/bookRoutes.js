@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Book = require('../models/Book');
+const protect = require('../middleware/authMiddleware');
 
 // 📌 Add a new book
 router.post('/', async (req, res) => {
@@ -60,6 +61,27 @@ router.delete('/:id', async (req, res) => {
         res.json({ message: 'Book deleted successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+});
+
+// 📌 Borrow a book (student)
+router.post('/:id/borrow', protect, async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id);
+        if (!book) return res.status(404).json({ message: 'Book not found' });
+
+        if (book.status === 'Issued' || book.availableCopies <= 0) {
+            return res.status(400).json({ message: 'Book not available' });
+        }
+
+        book.issuedTo.push({ memberId: req.student._id, issueDate: new Date(), isReturned: false });
+        book.availableCopies = Math.max(0, (book.availableCopies || 1) - 1);
+        if (book.availableCopies === 0) book.status = 'Issued';
+
+        const updated = await book.save();
+        res.json(updated);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
 });
 

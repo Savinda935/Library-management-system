@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../api";
 
 export default function Dashboard() {
   const [books, setBooks] = useState([]);
@@ -10,6 +11,7 @@ export default function Dashboard() {
   const [showBorrowModal, setShowBorrowModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
   const [user] = useState({ name: "John Doe", id: "M001", email: "john@email.com" }); // Mock user
+  const isLoggedIn = !!localStorage.getItem('token');
 
   // Fetch books from backend
   useEffect(() => {
@@ -48,16 +50,29 @@ export default function Dashboard() {
     setShowBorrowModal(true);
   };
 
-  const confirmBorrow = () => {
-    if (selectedBook) {
+  const confirmBorrow = async () => {
+    if (!selectedBook) return;
+    try {
+      const { data } = await api.post(`/books/${selectedBook._id}/borrow`);
       setBorrowedBooks(prev => [...prev, {
         ...selectedBook,
         borrowDate: new Date().toLocaleDateString(),
-        dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString() // 14 days from now
+        dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString()
       }]);
+      // Refresh book list to reflect availability changes
+      const res = await axios.get("http://localhost:5000/api/books");
+      setBooks(res.data);
+    } catch (e) {
+      console.error('Borrow error:', e?.response?.status, e?.response?.data || e.message);
+      if (e?.response?.status === 401) {
+        alert('Please login to borrow books. Redirecting to login...');
+        window.location.href = '/login';
+      } else {
+        alert(e?.response?.data?.message || 'Borrow failed. Please try again.');
+      }
+    } finally {
       setShowBorrowModal(false);
       setSelectedBook(null);
-      // Here you would typically make an API call to update the book status
     }
   };
 
@@ -349,7 +364,7 @@ export default function Dashboard() {
 
                 {/* Borrow Button */}
                 <button
-                  onClick={() => handleBorrowBook(book)}
+                  onClick={() => isLoggedIn ? handleBorrowBook(book) : window.location.href = '/login'}
                   disabled={book.status === "Issued" || borrowedBooks.some(b => b._id === book._id)}
                   style={{
                     width: '100%',
@@ -394,7 +409,7 @@ export default function Dashboard() {
                       <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                       </svg>
-                      Borrow Book
+                      {isLoggedIn ? 'Borrow Book' : 'Login to Borrow'}
                     </>
                   )}
                 </button>
