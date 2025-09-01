@@ -76,6 +76,23 @@ export default function Dashboard() {
     }
   };
 
+  const handleReturnBook = async (bookId) => {
+    try {
+      await api.post(`/books/${bookId}/return`);
+      
+      // Remove the book from borrowed list
+      setBorrowedBooks(prev => prev.filter(book => book._id !== bookId));
+      
+      // Refresh book list to reflect availability changes
+      const res = await axios.get("http://localhost:5000/api/books");
+      setBooks(res.data);
+      
+      alert('Book returned successfully!');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to return book');
+    }
+  };
+
   if (loading) {
     return (
       <div style={{
@@ -396,12 +413,39 @@ export default function Dashboard() {
                   }}
                 >
                   {borrowedBooks.some(b => b._id === book._id) ? (
-                    <>
+                    <button
+                      onClick={() => handleReturnBook(book._id)}
+                      style={{
+                        width: '100%',
+                        padding: '12px 20px',
+                        background: '#dc2626',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = '#b91c1c';
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = '0 8px 20px rgba(220, 38, 38, 0.3)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = '#dc2626';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = 'none';
+                      }}
+                    >
                       <svg style={{ width: '20px', height: '20px' }} fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        <path fillRule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                       </svg>
-                      Already Borrowed
-                    </>
+                      Return Book
+                    </button>
                   ) : book.status === "Issued" ? (
                     "Not Available"
                   ) : (

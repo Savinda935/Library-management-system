@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Student = require('../models/Student');
 const router = express.Router();
 
 // Register
@@ -27,6 +28,16 @@ router.post('/login', async (req, res) => {
     res.json({ token });
   } else {
     res.status(400).json({ error: 'Invalid credentials' });
+  }
+});
+
+// Get all students (for dashboard)
+router.get('/', async (req, res) => {
+  try {
+    const students = await Student.find().select('-password');
+    res.json(students);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

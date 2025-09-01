@@ -56,6 +56,26 @@ const Profile = () => {
     }
   };
 
+  const handleReturnBook = async (bookId) => {
+    try {
+      setMessage('');
+      await api.post(`/books/${bookId}/return`);
+      
+      // Remove the book from borrowed list
+      setBorrowed(prev => prev.filter(book => book._id !== bookId));
+      
+      setMessage('Book returned successfully!');
+      
+      // Clear message after 3 seconds
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Failed to return book');
+      
+      // Clear error message after 3 seconds
+      setTimeout(() => setMessage(''), 3000);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{
@@ -216,6 +236,28 @@ const Profile = () => {
                       <div style={{ fontWeight: 600, color: '#111827' }}>{book.title}</div>
                       {book.author && <div style={{ fontSize: '14px', color: '#6b7280' }}>by {book.author}</div>}
                       {book.genre && <div style={{ marginTop: 6, fontSize: '12px', color: '#1d4ed8', background: '#eff6ff', padding: '2px 8px', display: 'inline-block', borderRadius: '9999px' }}>{book.genre}</div>}
+                      
+                      {/* Return Book Button */}
+                      <button
+                        onClick={() => handleReturnBook(book._id)}
+                        style={{
+                          marginTop: '12px',
+                          width: '100%',
+                          padding: '8px 16px',
+                          backgroundColor: '#dc2626',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          transition: 'background-color 0.2s'
+                        }}
+                        onMouseEnter={(e) => e.target.style.backgroundColor = '#b91c1c'}
+                        onMouseLeave={(e) => e.target.style.backgroundColor = '#dc2626'}
+                      >
+                        Return Book
+                      </button>
                     </div>
                   </div>
                 ))}

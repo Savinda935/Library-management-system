@@ -85,4 +85,39 @@ router.post('/:id/borrow', protect, async (req, res) => {
     }
 });
 
+// 📌 Return a book (student)
+router.post('/:id/return', protect, async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id);
+        if (!book) return res.status(404).json({ message: 'Book not found' });
+
+        // Find the student's borrowing record
+        const borrowingRecord = book.issuedTo.find(record => 
+            record.memberId.toString() === req.student._id.toString() && 
+            !record.isReturned
+        );
+
+        if (!borrowingRecord) {
+            return res.status(400).json({ message: 'You have not borrowed this book' });
+        }
+
+        // Mark the book as returned
+        borrowingRecord.isReturned = true;
+        borrowingRecord.returnDate = new Date();
+
+        // Update book availability
+        book.availableCopies = Math.min(book.totalCopies, book.availableCopies + 1);
+        
+        // Update book status if all copies are now available
+        if (book.availableCopies === book.totalCopies) {
+            book.status = 'Available';
+        }
+
+        const updated = await book.save();
+        res.json({ message: 'Book returned successfully', book: updated });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
 module.exports = router;
